@@ -2,6 +2,7 @@
 #include <list>
 #include <iterator>
 #include <algorithm>
+#include <vector>
 
 class Base {
     public:
@@ -108,6 +109,44 @@ class Sort {
       Sort(){};
 
       virtual void sort(Container* container) = 0;
+};
+
+class Vcontainer: protected Container {
+    public:
+      Vcontainer() : Container() {};
+      Vcontainer(Sort* function) : Container(function) {};
+
+    void set_sort_function(Sort* function){
+        sort_function = function;
+    }
+
+    void add_element(Base* element){
+        elems.push_back(element);
+    }
+
+    void print(){
+        for(int i = 0; i < elems.size(); i++)
+            std::cout<<elems[i]->evaluate()<<std::endl;
+    }
+
+    void sort(){
+        sort_function->sort(this);
+    }
+
+    void swap(int i, int j){
+        std::swap(elems[i], elems[j]);
+    }
+
+    Base* at(int i){
+        return elems[i];
+    }
+
+    int size(){
+        return elems.size();
+    }
+
+    private:
+        std::vector<Base*> elems;
 };
 
 class Lcontainer: protected Container {
@@ -222,18 +261,38 @@ int main(int argc, char **argv){
     lcon.print();
     std::cout<<std::endl;
 
-    std::cout<<"Sorting with ascending insertion sort"<<std::endl;
+    std::cout<<"Sorting list with ascending insertion sort"<<std::endl;
     lcon.sort();
     lcon.print();
     std::cout<<std::endl;
 
 
-    std::cout<<"Sorting with descending bubble sort"<<std::endl;
+    std::cout<<"Sorting list with descending bubble sort"<<std::endl;
     BubbleSort bSort;
     lcon.set_sort_function(&bSort);
     lcon.sort();
     lcon.print();
     std::cout<<std::endl;
+
+    Vcontainer vcon(&iSort);
+    vcon.add_element(&a2);
+    vcon.add_element(&sq2);
+    vcon.add_element(&m);
+    vcon.add_element(&div);
+    vcon.add_element(&a3);
+    vcon.add_element(&a);
+
+    std::cout<<"Sorting vector with ascending insertion sort"<<std::endl;
+    vcon.sort();
+    vcon.print();
+    std::cout<<std::endl;
+
+    std::cout<<"Sorting vector with descending bubble sort"<<std::endl;
+    vcon.set_sort_function(&bSort);
+    vcon.sort();
+    vcon.print();
+    std::cout<<std::endl;
+
 }
 
 
